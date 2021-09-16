@@ -116,6 +116,7 @@ func (p *Package) processGettext(x *ast.CallExpr, fnName string) {
 	switch fnName {
 	case "Gettext": // Gettext(msgid string) string
 		pos := p.fset.Position(x.Pos())
+		fmt.Println(p.pkgpath + "/" + filepath.Base(pos.Filename))
 		p.potFile.Messages = append(p.potFile.Messages, po.Message{
 			Comment: po.Comment{
 				ReferenceFile: []string{p.pkgpath + "/" + filepath.Base(pos.Filename)},
