@@ -5,7 +5,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"go/ast"
 	"go/importer"
@@ -14,7 +13,6 @@ import (
 	"go/types"
 	"log"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -118,8 +116,9 @@ func (p *Package) processGettext(x *ast.CallExpr, fnName string) {
 	switch fnName {
 	case "Gettext": // Gettext(msgid string) string
 		pos := p.fset.Position(x.Pos())
-		fmt.Println(p.pkgpath + "/" + filepath.Base(pos.Filename) + ":" + strconv.Itoa(pos.Line))
-		fmt.Println(json.Marshal(x))
+		if p.evalStringValue(x.Args[0]) == "" {
+			return
+		}
 		p.potFile.Messages = append(p.potFile.Messages, po.Message{
 			Comment: po.Comment{
 				ReferenceFile: []string{p.pkgpath + "/" + filepath.Base(pos.Filename)},
