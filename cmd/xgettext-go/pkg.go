@@ -102,9 +102,7 @@ func (p *Package) GenPotFile() *po.File {
 			case *ast.CallExpr:
 				switch sel := x.Fun.(type) {
 				case *ast.SelectorExpr:
-					if p.isGettextPackage(sel.X) {
-						p.processGettext(x, sel.Sel.Name)
-					}
+					p.processGettext(x, sel.Sel.Name)
 				}
 			}
 			return true
@@ -112,22 +110,6 @@ func (p *Package) GenPotFile() *po.File {
 	}
 
 	return p.potFile
-}
-
-func (p *Package) isGettextPackage(node ast.Node) bool {
-	inner := p.typesPackage.Scope().Innermost(node.Pos())
-	if ident, ok := node.(*ast.Ident); ok {
-		if _, obj := inner.LookupParent(ident.Name, node.Pos()); obj != nil {
-			if pkgName, ok := obj.(*types.PkgName); ok {
-				if pkg := pkgName.Imported(); pkg != nil {
-					if pkg.Path() == "github.com/chai2010/gettext-go" {
-						return true
-					}
-				}
-			}
-		}
-	}
-	return false
 }
 
 func (p *Package) processGettext(x *ast.CallExpr, fnName string) {
