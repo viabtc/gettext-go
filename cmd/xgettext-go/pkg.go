@@ -169,6 +169,6 @@ func (p *Package) evalStringValue(val interface{}) string {
 		right := p.evalStringValue(val.(*ast.BinaryExpr).Y)
 		return left[0:len(left)-1] + right[1:len(right)]
 	default:
-		panic(fmt.Sprintf("unknown type: %v", val))
+		panic(fmt.Sprintf("unknown type: %+v", val))
 	}
 }
